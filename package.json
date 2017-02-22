@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.15.3",
     "body-parser": "^1.16.1",
+    "feed-read-parser": "0.0.6",
     "vue": "^2.1.0"
   },
   "devDependencies": {

@@ -1,6 +1,9 @@
 <template>
     <div class="feed">
         <h2 class="title is-2">{{ name }}</h2>
+        <ul>
+            <li v-for="article in articles">{{ article.title }}</li>
+        </ul>
     </div>
 </template>
 
@@ -14,14 +17,16 @@
             return {
                 feeds: [
                     'http://feeds.feedburner.com/TechCrunch/',
-                    'https://korben.info/feed'
-                ]
+                    'https://korben.info/feed',
+                    'http://rss.liberation.fr/rss/latest/'
+                ],
+                articles: []
             }
         },
         created () {
             this.feeds.map(url => {
                 axios.post(api+'/fetch', { url })
-                    .then(response => console.log(response));
+                    .then(response => this.articles = [...this.articles, ...response.data]);
             });
         }
     }
