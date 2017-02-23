@@ -1,50 +1,39 @@
-importScripts('serviceworker-cache-polyfill.js');
+importScripts('/serviceworker-cache-polyfill.js');
 
-var CACHE_NAME = 'hue-speech';
+var CACHE_NAME = 'vue-rss';
 
 // File want to cache
 var urlsToCache = [
-  './',
-  './index.html',
-  './manifest.json',
-  './src/assets/icons/icon-48.png',
-  './src/assets/icons/icon-96.png',
-  './src/assets/icons/icon-144.png',
-  './src/assets/icons/icon-152.png',
-  './src/assets/icons/icon-196.png',
-  './src/assets/icons/icon-384.png',
-  './serviceworker-cache-polyfill.js',
-  './dist/build.js',
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/serviceworker-cache-polyfill.js',
+  '/dist/build.js',
 ];
 
 
 // Set the callback for the install step
-self.addEventListener('oninstall', function (e) {
-  console.log('[serviceWorker]: Installing...');
+self.addEventListener('install', function(event) {
   // perform install steps
-  e.waitUntil(
+  event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(function (cache) {
-        console.log('[serviceWorker]: Cache All');
+      .then(function(cache) {
+        console.log('Opened cache');
         return cache.addAll(urlsToCache);
-      })
-      .then(function () {
-        console.log('[serviceWorker]: Intalled And Skip Waiting on Install');
-        return self.skipWaiting();
       })
   );
 });
 
 
-self.addEventListener('onfetch', function (e) {
+self.addEventListener('fetch', function(event) {
 
-  console.log('[serviceWorker]: Fetching ' + e.request.url);
-  var raceUrl = 'API/';
-  if(e.request.url.indexOf(raceUrl) > -1){
-    e.respondWith(
+  console.log('[serviceWorker]: Fetching ' + event.request.url);
+  var raceUrl = 'api/';
+  if(event.request.url.indexOf(raceUrl) > -1){
+    event.respondWith(
       caches.open(CACHE_NAME).then(function (cache) {
-        return fetch(e.request).then(function (res) {
-          cache.put(e.request.url, res.clone());
+        return fetch(event.request).then(function (res) {
+          cache.put(event.request.url, res.clone());
           return res;
         }).catch(err => {
           console.log('[serviceWorker]: Fetch Error ' + err);
@@ -53,20 +42,20 @@ self.addEventListener('onfetch', function (e) {
     );
   }
 
-  else if (e.request.url.indexOf('src/assets/img-content') > -1) {
-    e.respondWith(
-      caches.match(e.request).then(function (res) {
+  else if (event.request.url.indexOf('src/assets/img-content') > -1) {
+    event.respondWith(
+      caches.match(event.request).then(function (res) {
 
         if(res) return res
 
-        return fetch(e.request.clone(), { mode: 'no-cors' }).then(function (newRes) {
+        return fetch(event.request.clone(), { mode: 'no-cors' }).then(function (newRes) {
 
           if(!newRes || newRes.status !== 200 || newRes.type !== 'basic') {
             return newRes;
           }
 
           caches.open(CACHE_NAME).then(function (cache) {
-            cache.put(e.request, newRes.clone());
+            cache.put(event.request, newRes.clone());
           }).catch(err => {
             console.log('[serviceWorker]: Fetch Error ' + err);
           });
@@ -79,9 +68,9 @@ self.addEventListener('onfetch', function (e) {
   }
 
   else {
-    e.respondWith(
-      caches.match(e.request).then(function (res) {
-        return res || fetch(e.request)
+    event.respondWith(
+      caches.match(event.request).then(function (res) {
+        return res || fetch(event.request)
       })
     );
   }
@@ -89,13 +78,13 @@ self.addEventListener('onfetch', function (e) {
 });
 
 
-self.addEventListener('onactivate', function (e) {
+self.addEventListener('activate', function(event) {
 
   console.log('[serviceWorker]: Actived');
 
-  var whiteList = ['simple-pwa-v2'];
+  var whiteList = ['vue-rss'];
 
-  e.waitUntil(
+  event.waitUntil(
     caches.keys().then(function (cacheNames) {
       return Promise.all(
         cacheNames.map(function (cacheName) {

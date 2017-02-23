@@ -15,9 +15,9 @@ app.use('/dist', express.static('dist'));
 app.use('/src', express.static('src'));
 app.use('/', express.static('public'));
 
-app.post('/fetch', (req, res) => {
+app.post('/api/fetch', (req, res) => {
     feed(req.body.url, (err, articles) => {
-        if (err) throw err;
+        if (err) res.send([]);
         res.send(articles);
     });
 });

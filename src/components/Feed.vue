@@ -9,7 +9,7 @@
 
 <script>
     import axios from 'axios';
-    const api = 'http://localhost:1337';
+    const api = 'http://localhost:1337/api';
 
     export default {
         props: ['name'],
@@ -20,13 +20,18 @@
                     'https://korben.info/feed',
                     'http://rss.liberation.fr/rss/latest/'
                 ],
-                articles: []
+                articles: []
             }
         },
         created () {
+            this.articles = JSON.parse(localStorage.getItem('articles')) || [];
             this.feeds.map(url => {
                 axios.post(api+'/fetch', { url })
-                    .then(response => this.articles = [...this.articles, ...response.data]);
+                    .then(response => {
+                        this.articles = [...this.articles, ...response.data];
+                        localStorage.setItem('articles', JSON.stringify(this.articles));
+                    }
+                );
             });
         }
     }
@@ -34,7 +39,7 @@
 
 <style scoped>
     .feed {
-        background-color: #ddd;
+        background-color: #eee;
         padding: 20px;
     }
 </style>
