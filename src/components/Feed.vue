@@ -42,15 +42,6 @@
                     }
                 );
             });
-        },
-        methods: {
-            show (article) {
-                console.log('showing ', article.title);
-                this.articles.find(art => JSON.stringify(art) == JSON.stringify(article)).isVisible = true;
-            },
-            showing (article) {
-                return this.articles.find(art => JSON.stringify(art) == JSON.stringify(article)).isVisible;
-            }
         }
     }
 </script>
