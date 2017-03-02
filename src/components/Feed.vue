@@ -10,6 +10,7 @@
 <script>
     import Vue from 'vue';
     import axios from 'axios';
+    import _ from 'lodash';
     import ArticleLink from './ArticleLink.vue';
 
     const api = 'http://localhost:1337/api';
@@ -34,8 +35,11 @@
             this.feeds.map(url => {
                 axios.post(api+'/fetch', { url })
                     .then(response => {
-                        this.articles = [...this.articles, ...response.data];
-                        localStorage.setItem('articles', JSON.stringify(this.articles));
+                        const articles = response.data;
+                        if (articles.length) {
+                            this.articles = articles;
+                            localStorage.setItem('articles', JSON.stringify(this.articles));
+                        }
                         this.articles.map(article => {
                             return { ...article, isVisible: false };
                         })
