@@ -22,6 +22,4 @@ app.post('/api/fetch', (req, res) => {
     });
 });
 
-
-console.log('')
 server.listen(1337, () => console.log('Magic happens on port 1337'));
