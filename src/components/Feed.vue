@@ -10,7 +10,6 @@
 <script>
     import Vue from 'vue';
     import axios from 'axios';
-    import _ from 'lodash';
     import ArticleLink from './ArticleLink.vue';
 
     const api = 'http://localhost:1337/api';
